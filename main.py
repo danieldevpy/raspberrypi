@@ -33,15 +33,17 @@ async def main():
 
 async def enviar_mensagens():
     while True:
-        if cam.last_frame is not None and conexoes:
-          ret, buffer = cv2.imencode('.jpg', cam.last_frame)
-          if ret:
-            for conexao in conexoes:
-              try:
-                await conexao.send(buffer.tobytes())
-              except:
-                conexoes.remove(conexao)   
-        await asyncio.sleep(0)
+        while True:
+          if cam.last_frame is not None and conexoes:
+            ret, buffer = cv2.imencode('.jpg', cam.last_frame)
+            if ret:
+              for conexao in conexoes:
+                try:
+                  await conexao.send(buffer.tobytes())
+                except:
+                  conexoes.remove(conexao)
+                  break
+          await asyncio.sleep(0)
 
 async def main_with_tasks():
     await asyncio.gather(main(), enviar_mensagens())
