@@ -6,7 +6,6 @@ import cv2
 
 conexoes = set()
 cam = CamModule(0)
-Thread(target=cam.run).start()
 
 async def echo(websocket, path):
   conexoes.add(websocket)
@@ -32,17 +31,20 @@ async def main():
         await asyncio.Future()  # run forever
 
 async def enviar_mensagens():
+    remove = None
     while True:
-        while True:
-          if cam.last_frame is not None and conexoes:
-            ret, buffer = cv2.imencode('.jpg', cam.last_frame)
-            if ret:
-              for conexao in conexoes:
-                try:
-                  await conexao.send(buffer.tobytes())
-                except:
-                  conexoes.remove(conexao)
-                  break
+        if conexoes:
+          cam.capture()
+          ret, buffer = cv2.imencode('.jpg', cam.last_frame)
+          bytes_array = buffer.tobytes()
+          for conexao in conexoes:
+            try:
+              await conexao.send(bytes_array)
+            except:
+              remove = conexao
+          if remove:
+             conexoes.remove(remove)
+             remove = None
           await asyncio.sleep(0)
 
 async def main_with_tasks():
