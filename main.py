@@ -10,7 +10,7 @@ Thread(target=cam.run).start()
 
 async def echo(websocket, path):
   conexoes.add(websocket)
-  
+  print(websocket)
   try:
       async for message in websocket:
           # Processar mensagens recebidas, se necessário
@@ -37,7 +37,10 @@ async def enviar_mensagens():
           ret, buffer = cv2.imencode('.jpg', cam.last_frame)
           if ret:
             for conexao in conexoes:
-              await conexao.send(buffer.tobytes())
+              try:
+                await conexao.send(buffer.tobytes())
+              except:
+                conexoes.remove(conexao)   
         await asyncio.sleep(0)
 
 async def main_with_tasks():

@@ -17,9 +17,7 @@ class CamModule:
         print("Erro ao capturar o frame.")
         return
 
-
     self.new_frame_time = time.time() 
-  
     fps = 1/(self.new_frame_time-self.prev_frame_time) 
     self.prev_frame_time = self.new_frame_time 
   

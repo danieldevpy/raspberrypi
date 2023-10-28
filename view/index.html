@@ -11,7 +11,8 @@
     <img id="frame" src="" alt="Imagem recebida por WebSocket">
     <script>
         // Crie uma nova instância de WebSocket para se conectar a localhost:8000
-        const socket = new WebSocket('ws://localhost:8000');
+        const socket = new WebSocket('ws://192.168.10.20:8000');
+        const imgElement = document.getElementById('frame');
 
         // Quando a conexão WebSocket for estabelecida
         socket.addEventListener('open', (event) => {
@@ -20,7 +21,6 @@
 
         // Quando novos dados forem recebidos pelo WebSocket
         socket.addEventListener('message', (event) => {
-          const imgElement = document.getElementById('frame');
           const blob = new Blob([event.data], { type: 'image/jpeg' });
           imgElement.src = URL.createObjectURL(blob);
         });
