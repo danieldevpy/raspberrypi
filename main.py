@@ -36,7 +36,6 @@ async def enviar_mensagens():
         if cam.last_frame is not None and conexoes:
           ret, buffer = cv2.imencode('.jpg', cam.last_frame)
           if ret:
-            print(buffer)
             for conexao in conexoes:
               await conexao.send(buffer.tobytes())
         await asyncio.sleep(0)
