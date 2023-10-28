@@ -9,7 +9,6 @@ cam = CamModule(0)
 
 async def echo(websocket, path):
   conexoes.add(websocket)
-  print(websocket)
   try:
       async for message in websocket:
           # Processar mensagens recebidas, se necessário
@@ -31,21 +30,19 @@ async def main():
         await asyncio.Future()  # run forever
 
 async def enviar_mensagens():
+    print('começando')
     remove = None
     while True:
         if conexoes:
           cam.capture()
           ret, buffer = cv2.imencode('.jpg', cam.last_frame)
           bytes_array = buffer.tobytes()
-          for conexao in conexoes:
+          for websocket in conexoes:
             try:
-              await conexao.send(bytes_array)
+              await websocket.send(bytes_array)
             except:
-              remove = conexao
-          if remove:
-             conexoes.remove(remove)
-             remove = None
-          await asyncio.sleep(0)
+              pass
+        await asyncio.sleep(0)
 
 async def main_with_tasks():
     await asyncio.gather(main(), enviar_mensagens())
