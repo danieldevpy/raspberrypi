@@ -39,7 +39,7 @@ async def enviar_mensagens():
             print(buffer)
             for conexao in conexoes:
               await conexao.send(buffer.tobytes())
-        await asyncio.sleep(0.001)
+        await asyncio.sleep(0)
 
 async def main_with_tasks():
     await asyncio.gather(main(), enviar_mensagens())
